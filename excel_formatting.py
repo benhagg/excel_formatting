@@ -11,7 +11,7 @@ from openpyxl.styles import Font
 from openpyxl import Workbook
 
 # importing excel file with relative path
-external_workbook = openpyxl.load_workbook(r"Poorly_Organized_Data_1(1).xlsx")
+external_workbook = openpyxl.load_workbook(r"Poorly_Organized_Data_1.xlsx")
 
 # Creating new work book
 edited_workbook = openpyxl.Workbook()
@@ -37,6 +37,9 @@ for class_name in classes:
 
     class_sheet.append(["First Name", "Last Name", "Student ID", "Grade"])
 
+    # add filter to the header of each row
+    class_sheet.auto_filter.ref = 'A1:D1'
+        
     # goes through each row to find data for each class
     for row in sheet.iter_rows(min_row= 2, values_only= True):
 
@@ -48,6 +51,20 @@ for class_name in classes:
             student_id = student_info[2]
             grade = row[2]
             class_sheet.append([last_name, first_name, student_id, grade])
+    
+    # add class metrics
+    class_sheet ['F2'] = 'High Grade'
+    class_sheet ['F3'] = 'Low Grade'
+    class_sheet ['F4'] = 'Mean Grade'
+    class_sheet ['F5'] = 'Median Grade'
+    class_sheet ['F6'] = 'Total Students'
+    # add functions to calculate class metrics
+    class_sheet ['G2'] = f'=MAX(D2:D{class_sheet.max_row})'
+    class_sheet ['G3'] = f'=MIN(D2:D{class_sheet.max_row})'
+    class_sheet ['G4'] = f'=ROUND(AVERAGE(D2:D{class_sheet.max_row}),2)'
+    class_sheet ['G5'] = f'=MEDIAN(D2:D{class_sheet.max_row})'
+    class_sheet ['G6'] = f'=COUNT(D2:D{class_sheet.max_row})'
+
 # removes unwanted sheet     
 edited_workbook.remove(edited_workbook["Sheet"])
 #saves workbook
