@@ -35,11 +35,23 @@ for class_name in classes:
 
     class_sheet = edited_workbook.create_sheet(title = class_name)
 
-    class_sheet.append(["First Name", "Last Name", "Student ID", "Grade"])
+    class_sheet.append(["First Name", "Last Name", "Student ID", "Grade","       ","Summary Statistics","Value"])
+
+    headers = ["First Name", "Last Name", "Student ID", "Grade","       ","Summary Statistics","Value"]
+    
 
     # add filter to the header of each row
     class_sheet.auto_filter.ref = 'A1:D1'
-        
+
+    # make a bold font to apply to the headers
+    bold_font = Font(bold=True)
+
+    # adjust the width and bold headers based on number of characters
+    for col in range(1, 8):  # Columns A, B, C, D, F, G
+        class_sheet.cell(row=1, column=col).font = bold_font
+        class_sheet.column_dimensions[chr(64 + col)].width = len(headers[col - 1]) + 5
+    
+   
     # goes through each row to find data for each class
     for row in sheet.iter_rows(min_row= 2, values_only= True):
 
@@ -58,6 +70,9 @@ for class_name in classes:
     class_sheet ['F4'] = 'Mean Grade'
     class_sheet ['F5'] = 'Median Grade'
     class_sheet ['F6'] = 'Total Students'
+    class_sheet ['F1'] = 'Summary Statistics'
+    class_sheet ['G1'] = 'Value'
+
     # add functions to calculate class metrics
     class_sheet ['G2'] = f'=MAX(D2:D{class_sheet.max_row})'
     class_sheet ['G3'] = f'=MIN(D2:D{class_sheet.max_row})'
@@ -65,7 +80,8 @@ for class_name in classes:
     class_sheet ['G5'] = f'=MEDIAN(D2:D{class_sheet.max_row})'
     class_sheet ['G6'] = f'=COUNT(D2:D{class_sheet.max_row})'
 
+
 # removes unwanted sheet     
 edited_workbook.remove(edited_workbook["Sheet"])
 #saves workbook
-edited_workbook.save("Edited_Workbook.xlsx")
+edited_workbook.save(filename="formatted_grades.xlsx")
